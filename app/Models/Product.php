@@ -16,6 +16,8 @@ class Product extends Model
         'sku', 'gambar', 'badge', 'catatan_stok', 'status',
     ];
 
+    protected $hidden = ['harga_modal'];
+
     protected $casts = [
         'harga_jual' => 'decimal:2',
         'harga_modal' => 'decimal:2',

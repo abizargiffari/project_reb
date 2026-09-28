@@ -14,7 +14,7 @@ class OrderFactory extends Factory
     {
         $subtotal = fake()->numberBetween(15000, 80000);
         $ongkirAsli = 2000;
-        $ongkir = fake()->boolean(70) ? 0 : $ongkirAsli; // sering gratis ongkir
+        $ongkir = fake()->boolean(70) ? 0 : $ongkirAsli;
         $biayaKantong = 500;
         $total = $subtotal + $ongkir + $biayaKantong;
 

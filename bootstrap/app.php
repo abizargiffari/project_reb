@@ -12,11 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias([
-            'role' => EnsureUserHasRole::class,
-            \App\Http\Middleware\HandleInertiaRequests::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-        ]);
+    $middleware->web(append: [
+        \App\Http\Middleware\HandleInertiaRequests::class,
+        \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+    ]);
+
+    $middleware->alias([
+        'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+    ]);
+
+    $middleware->validateCsrfTokens(except: ['midtrans/callback']);
+
 
         //
     })

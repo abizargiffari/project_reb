@@ -1,6 +1,22 @@
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, useForm } from '@inertiajs/react';
 
+// Field & inputClass didefinisikan DI LUAR komponen Form. Kalau di dalam, tiap ketikan membuat
+// React menganggap Field sebagai komponen baru -> input di-mount ulang dan kehilangan fokus.
+const inputClass = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary';
+
+function Field({ label, error, required, children }) {
+    return (
+        <div className="mb-4">
+            <label className="block text-xs font-semibold mb-1.5">
+                {label} {required && <span className="text-danger">*</span>}
+            </label>
+            {children}
+            {error && <p className="text-xs text-danger mt-1">{error}</p>}
+        </div>
+    );
+}
+
 export default function Form({ categories, product }) {
     const isEdit = !!product;
 
@@ -27,19 +43,6 @@ export default function Form({ categories, product }) {
         post(url, { forceFormData: true });
     }
 
-    function Field({ label, error, required, children }) {
-        return (
-            <div className="mb-4">
-                <label className="block text-xs font-semibold mb-1.5">
-                    {label} {required && <span className="text-danger">*</span>}
-                </label>
-                {children}
-                {error && <p className="text-xs text-danger mt-1">{error}</p>}
-            </div>
-        );
-    }
-
-    const inputClass = 'w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary';
 
     return (
         <AdminLayout>

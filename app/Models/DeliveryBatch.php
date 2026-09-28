@@ -16,6 +16,9 @@ class DeliveryBatch extends Model
 
     protected $casts = ['status_aktif' => 'boolean'];
 
+    // Accessor lama (getXxxAttribute) TIDAK otomatis masuk JSON; harus didaftarkan di $appends.
+    protected $appends = ['sisa_slot'];
+
     public function orders()
     {
         return $this->hasMany(Order::class);

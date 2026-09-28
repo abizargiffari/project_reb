@@ -30,7 +30,8 @@ class ProductController extends Controller
             ->when($request->stok_kritis, fn ($q) => $q->whereColumn('stok', '<=', 'stok_minimum'))
             ->latest()
             ->paginate(15)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (Product $p) => $p->append(['is_low_stock', 'margin_persen']));
 
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
@@ -77,7 +78,7 @@ class ProductController extends Controller
     {
         return Inertia::render('Admin/Products/Form', [
             'categories' => Category::orderBy('urutan')->get(['id', 'nama']),
-            'product' => $product,
+            'product' => $product->makeVisible('harga_modal'),
         ]);
     }
 

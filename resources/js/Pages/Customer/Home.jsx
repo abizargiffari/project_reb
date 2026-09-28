@@ -116,7 +116,7 @@ export default function Home({ banners = [], deliveryBatches = [], featuredProdu
                                             {pkg.harga_coret && <span className="text-xs text-gray-400 line-through ml-2">Rp {Number(pkg.harga_coret).toLocaleString('id-ID')}</span>}
                                         </p>
                                         <button className="mt-3 w-full bg-primary text-white rounded-lg py-2.5 text-sm font-semibold">
-                                            🛒 Beli 1 Paket Langsung Masak
+                                            Beli 1 Paket Langsung Masak
                                         </button>
                                     </div>
                                 </div>

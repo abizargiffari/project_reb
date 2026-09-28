@@ -22,16 +22,20 @@ class CatalogController extends Controller
             ->when($request->satuan, fn ($q, $satuan) => $q->where('satuan', $satuan))
             ->when($request->boolean('hanya_stok_tersedia'), fn ($q) => $q->where('stok', '>', 0))
             ->when($request->q, fn ($q, $search) => $q->where('nama', 'like', "%{$search}%"))
-            ->when($request->urutan, function ($q, $urutan) {
-                match ($urutan) {
+            ->when($request->urutan && $request->urutan !== 'paling_laris', function ($q) use ($request) {
+                match ($request->urutan) {
                     'harga_rendah' => $q->orderBy('harga_jual', 'asc'),
                     'harga_tinggi' => $q->orderBy('harga_jual', 'desc'),
-                    'terbaru' => $q->latest(),
-                    // "paling_laris" idealnya urut dari jumlah terjual (butuh query agregat order_items,
-                    // untuk sekarang fallback ke terbaru; disempurnakan saat Modul Analitik/Order aktif).
-                    default => $q->latest(),
+                    default        => $q->latest(),
                 };
-            }, fn ($q) => $q->latest())
+            }, function ($q) {
+                // Default = "Paling Laris": urut dari total qty terjual (pesanan batal tidak dihitung).
+                $q->withSum(['orderItems as terjual' => function ($oi) {
+                    $oi->whereHas('order', fn ($o) => $o->where('status_pesanan', '!=', 'dibatalkan'));
+                }], 'qty')
+                ->orderByDesc('terjual')
+                ->latest();
+            })
             ->paginate(12)
             ->withQueryString();
 
