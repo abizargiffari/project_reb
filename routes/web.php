@@ -88,6 +88,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/pesanan', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
         Route::get('/pesanan/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
         Route::patch('/pesanan/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('orders.update-status');
+        Route::post('/pesanan/{order}/assign-kurir', [\App\Http\Controllers\Admin\OrderController::class, 'assignCourier'])->name('orders.assign-courier');
+        Route::post('/pesanan/generate-rute', [\App\Http\Controllers\Admin\OrderController::class, 'generateRoute'])->name('orders.generate-route');
 
         Route::get('/stok', [\App\Http\Controllers\Admin\StockController::class, 'index'])->name('stock.index');
         Route::post('/stok/{product}/movement', [\App\Http\Controllers\Admin\StockController::class, 'storeMovement'])->name('stock.movement');

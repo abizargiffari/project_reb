@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Order;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 
 class MidtransService
 {
@@ -78,6 +79,27 @@ class MidtransService
         );
 
         return hash_equals($expected, (string) ($payload['signature_key'] ?? ''));
+    }
+
+    /**
+     * Batalkan transaksi di sisi Midtrans kalau statusnya masih pending/capture,
+     * supaya order_id ini tidak "menggantung" di dashboard Midtrans setelah
+     * admin membatalkan pesanan secara sepihak dari sistem kita.
+     * Aman dipanggil untuk order yang belum pernah punya transaksi Midtrans sama sekali
+     * (mis. checkout gagal sebelum Snap dibuka) — errornya ditelan, bukan dilempar ulang.
+     */
+    public function cancelIfPending(string $orderNumber): void
+    {
+        try {
+            $status = Transaction::status($orderNumber);
+            $current = is_array($status) ? ($status['transaction_status'] ?? null) : ($status->transaction_status ?? null);
+
+            if (in_array($current, ['pending', 'capture'], true)) {
+                Transaction::cancel($orderNumber);
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     /** Terjemahkan status Midtrans ke status internal tabel payments. */

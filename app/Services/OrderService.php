@@ -4,10 +4,13 @@ namespace App\Services;
 
 use App\Models\Address;
 use App\Models\Cart;
+use App\Models\Courier;
+use App\Models\CourierRoute;
 use App\Models\DeliveryBatch;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\RouteStop;
 use App\Models\Setting;
 use App\Models\StockMovement;
 use App\Models\User;
@@ -17,6 +20,17 @@ use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
+    public function __construct(private MidtransService $midtrans) {}
+
+    /** Alur status yang diperbolehkan. Key = status sekarang, value = status tujuan yang sah. */
+    private const TRANSITIONS = [
+        'baru'       => ['diproses', 'dibatalkan'],
+        'diproses'   => ['diantar', 'dibatalkan'],
+        'diantar'    => ['selesai', 'dibatalkan'],
+        'selesai'    => [],
+        'dibatalkan' => [],
+    ];
+
     /**
      * Hitung rincian biaya dari isi keranjang. Dipakai untuk TAMPILAN (halaman checkout)
      * dan untuk PERHITUNGAN FINAL saat order dibuat, supaya angkanya selalu sama.
@@ -198,17 +212,19 @@ class OrderService
 
     /**
      * Membatalkan pesanan dan mengembalikan stok, slot kloter, dan kuota voucher.
-     * $userId null = dipicu sistem (webhook); terisi = dipicu admin/pelanggan.
+     *
+     * $userId null + $viaMidtransWebhook true  = dipicu notifikasi Midtrans (status sudah final di sana, JANGAN panggil cancel lagi).
+     * $userId terisi + $viaMidtransWebhook false = dipicu admin/pelanggan dari sistem kita (perlu beri tahu Midtrans supaya order_id tidak menggantung).
      */
-    public function cancel(Order $order, string $alasan, ?int $userId = null): void
+    public function cancel(Order $order, string $alasan, ?int $userId = null, bool $viaMidtransWebhook = false): void
     {
-        DB::transaction(function () use ($order, $alasan, $userId) {
+        DB::transaction(function () use ($order, $alasan, $userId, $viaMidtransWebhook) {
             $order = Order::lockForUpdate()->findOrFail($order->id);
 
             if ($order->status_pesanan === 'dibatalkan') {
-                return; // idempotent: notifikasi ganda tidak mengembalikan stok dua kali
+                return; // idempotent: notifikasi/klik ganda tidak mengembalikan stok dua kali
             }
-            if ($order->status_pembayaran === 'lunas' && $userId === null) {
+            if ($order->status_pembayaran === 'lunas' && $userId === null && $viaMidtransWebhook) {
                 return; // notifikasi "gagal" susulan tidak boleh membatalkan pesanan yang sudah lunas
             }
 
@@ -238,7 +254,57 @@ class OrderService
                 'status_pembayaran' => $order->status_pembayaran === 'lunas' ? 'lunas' : 'gagal',
             ]);
 
+            RouteStop::where('order_id', $order->id)->update(['status' => 'selesai']); // keluarkan dari rute aktif kurir
+
             $this->log($order, 'dibatalkan', $alasan, $userId);
+
+            // Beri tahu Midtrans HANYA kalau kita yang memicu pembatalan (bukan notifikasi dari mereka),
+            // dan hanya untuk metode online yang statusnya masih menggantung.
+            if (!$viaMidtransWebhook && $order->metode_bayar !== 'cod' && $order->status_pembayaran === 'gagal') {
+                $this->midtrans->cancelIfPending($order->order_number);
+            }
+        });
+    }
+
+    /**
+     * Ubah status_pesanan oleh admin/kurir, dengan validasi alur (tidak bisa lompat status).
+     * Kalau status baru = "selesai" dan metode COD, otomatis dianggap lunas (uang diterima kurir saat itu).
+     */
+    public function updateStatus(Order $order, string $statusBaru, ?int $userId, ?string $keterangan = null): Order
+    {
+        return DB::transaction(function () use ($order, $statusBaru, $userId, $keterangan) {
+            $order = Order::lockForUpdate()->findOrFail($order->id);
+
+            $diperbolehkan = self::TRANSITIONS[$order->status_pesanan] ?? [];
+            if (!in_array($statusBaru, $diperbolehkan, true)) {
+                throw ValidationException::withMessages([
+                    'status_pesanan' => "Tidak bisa mengubah status dari \"{$order->status_pesanan}\" ke \"{$statusBaru}\".",
+                ]);
+            }
+
+            if ($statusBaru === 'dibatalkan') {
+                $this->cancel($order, $keterangan ?? 'Dibatalkan oleh admin.', $userId);
+                return $order->fresh();
+            }
+
+            $order->update(['status_pesanan' => $statusBaru]);
+
+            RouteStop::where('order_id', $order->id)->update([
+                'status' => $statusBaru === 'diantar' ? 'diantar' : ($statusBaru === 'selesai' ? 'selesai' : 'menunggu'),
+            ]);
+
+            if ($statusBaru === 'selesai' && $order->metode_bayar === 'cod' && $order->status_pembayaran !== 'lunas') {
+                $order->update(['status_pembayaran' => 'lunas']);
+
+                $payment = $order->payments()->latest()->first();
+                $payment?->update(['status' => 'settlement', 'paid_at' => now()]);
+
+                $this->log($order, 'lunas', 'Pembayaran COD diterima kurir saat pesanan selesai.', $userId);
+            }
+
+            $this->log($order, $statusBaru, $keterangan, $userId);
+
+            return $order->fresh();
         });
     }
 
@@ -279,8 +345,40 @@ class OrderService
             $payment->save();
 
             if (in_array($status, ['deny', 'cancel', 'expire'], true)) {
-                $this->cancel($order, "Pembayaran {$status} di Midtrans.");
+                $this->cancel($order, "Pembayaran {$status} di Midtrans.", null, viaMidtransWebhook: true);
             }
+        });
+    }
+
+    /**
+     * Tugaskan sebuah order ke kurir. Membuat/menemukan CourierRoute untuk
+     * (kurir, kloter, tanggal antar) lalu menambahkannya sebagai RouteStop berurutan.
+     * Tanggal antar diambil dari tanggal order dibuat (model bisnis: pesan & antar di hari yang sama).
+     */
+    public function assignToCourier(Order $order, Courier $courier): RouteStop
+    {
+        return DB::transaction(function () use ($order, $courier) {
+            $order = Order::lockForUpdate()->findOrFail($order->id);
+
+            $route = CourierRoute::firstOrCreate(
+                [
+                    'courier_id'         => $courier->id,
+                    'delivery_batch_id'  => $order->delivery_batch_id,
+                    'tanggal'            => $order->created_at->toDateString(),
+                ],
+                ['status' => 'menunggu']
+            );
+
+            $urutanBerikut = (int) RouteStop::where('courier_route_id', $route->id)->max('urutan') + 1;
+
+            $stop = RouteStop::updateOrCreate(
+                ['order_id' => $order->id],
+                ['courier_route_id' => $route->id, 'urutan' => $urutanBerikut, 'status' => 'menunggu']
+            );
+
+            $order->update(['courier_id' => $courier->id]);
+
+            return $stop;
         });
     }
 
