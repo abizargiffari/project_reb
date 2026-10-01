@@ -2,11 +2,15 @@ import { Link, usePage } from '@inertiajs/react';
 
 const menu = [
     { label: 'Overview', href: route('admin.dashboard'), name: 'admin.dashboard' },
+    { label: 'Analitik', href: route('admin.analytics.index'), name: 'admin.analytics.*' },
     { label: 'Pesanan & Rute', href: route('admin.orders.index'), name: 'admin.orders.*' },
     { label: 'Stok & Sayuran', href: route('admin.stock.index'), name: 'admin.stock.*' },
     { label: 'Keuangan & Kas', href: route('admin.finance.index'), name: 'admin.finance.*' },
+    { label: 'Customer', href: route('admin.customers.index'), name: 'admin.customers.*' },
+    { label: 'Retur & Komplain', href: route('admin.returns.index'), name: 'admin.returns.*' },
     { label: 'Cetak Invoice', href: route('admin.print.index'), name: 'admin.print.*' },
     { label: 'Pengaturan Lapak', href: route('admin.settings.index'), name: 'admin.settings.*' },
+    { label: 'Manajemen Pengguna', href: route('admin.pengguna.index'), name: 'admin.pengguna.*' },
 ];
 
 export default function AdminLayout({ children }) {
@@ -54,9 +58,17 @@ export default function AdminLayout({ children }) {
                         <p className="font-bold text-primary">Lapak Sayur Pulungan</p>
                         <p className="text-xs text-text-secondary">Jagakarsa, Jakarta Selatan</p>
                     </div>
-                    <div className="text-right">
-                        <p className="text-sm font-bold">{auth?.user?.name}</p>
-                        <p className="text-xs text-text-secondary">Owner/Admin Utama</p>
+                    <div className="flex items-center gap-4">
+                        <div className="text-right">
+                            <p className="text-sm font-bold">{auth?.user?.name}</p>
+                            <p className="text-xs text-text-secondary">Owner/Admin Utama</p>
+                        </div>
+                        <Link
+                            href={route('logout')} method="post" as="button"
+                            className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-500 hover:border-danger hover:text-danger"
+                        >
+                            Keluar
+                        </Link>
                     </div>
                 </header>
 

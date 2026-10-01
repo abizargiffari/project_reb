@@ -1,6 +1,6 @@
 import Badge from '@/Components/UI/Badge';
 import { jam, rupiah } from '@/Utils/format';
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 
 export default function Index({ courier, routes, tanggal }) {
     const { flash } = usePage().props;
@@ -27,8 +27,18 @@ export default function Index({ courier, routes, tanggal }) {
             <Head title="Rute Pengantaran" />
 
             <header className="bg-primary text-white px-5 py-4 sticky top-0 z-10">
-                <p className="text-xs text-white/70">Rute Pengantaran</p>
-                <p className="font-bold text-lg">{courier.nama}</p>
+                <div className="flex items-start justify-between">
+                    <div>
+                        <p className="text-xs text-white/70">Rute Pengantaran</p>
+                        <p className="font-bold text-lg">{courier.nama}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Link href={route('kurir.cash.index')} className="text-xs font-semibold text-white/90 underline">Kas</Link>
+                        <Link href={route('logout')} method="post" as="button" className="text-xs font-semibold text-white/90 underline">
+                            Keluar
+                        </Link>
+                    </div>
+                </div>
                 <input
                     type="date" value={tanggal} onChange={(e) => ubahTanggal(e.target.value)}
                     className="mt-2 rounded-lg px-2 py-1 text-sm text-primary"

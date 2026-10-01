@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/akun/pesanan', [\App\Http\Controllers\Customer\OrderHistoryController::class, 'index'])->name('account.orders');
     Route::get('/akun/pesanan/{order}', [\App\Http\Controllers\Customer\OrderHistoryController::class, 'show'])->name('account.orders.show');
+    Route::post('/akun/pesanan/{order}/retur', [\App\Http\Controllers\Customer\ReturnController::class, 'store'])->name('account.orders.return.store');
     Route::get('/akun/alamat', [\App\Http\Controllers\Customer\AddressController::class, 'index'])->name('account.addresses');
 
     // Profile bawaan Breeze
@@ -96,15 +97,25 @@ Route::middleware(['auth', 'verified', 'role:admin'])
 
         Route::get('/keuangan', [\App\Http\Controllers\Admin\FinanceController::class, 'index'])->name('finance.index');
         Route::post('/keuangan/transaksi', [\App\Http\Controllers\Admin\FinanceController::class, 'storeTransaction'])->name('finance.transaction.store');
+        Route::delete('/keuangan/transaksi/{cashTransaction}', [\App\Http\Controllers\Admin\FinanceController::class, 'destroyTransaction'])->name('finance.transaction.destroy');
+        Route::get('/keuangan/export', [\App\Http\Controllers\Admin\FinanceController::class, 'exportCsv'])->name('finance.export');
 
         Route::get('/cetak', [\App\Http\Controllers\Admin\PrintController::class, 'index'])->name('print.index');
+        Route::get('/cetak/struk/{order}', [\App\Http\Controllers\Admin\PrintController::class, 'struk'])->name('print.struk');
+        Route::get('/cetak/struk-batch', [\App\Http\Controllers\Admin\PrintController::class, 'strukBatch'])->name('print.struk-batch');
 
         Route::get('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
         Route::patch('/pengaturan', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+        Route::post('/pengaturan/kloter', [\App\Http\Controllers\Admin\SettingController::class, 'storeBatch'])->name('settings.kloter.store');
+        Route::patch('/pengaturan/kloter/{batch}', [\App\Http\Controllers\Admin\SettingController::class, 'updateBatch'])->name('settings.kloter.update');
+        Route::delete('/pengaturan/kloter/{batch}', [\App\Http\Controllers\Admin\SettingController::class, 'destroyBatch'])->name('settings.kloter.destroy');
 
         Route::resource('pengguna', \App\Http\Controllers\Admin\UserController::class)->except(['show']);
 
+        Route::get('/analitik', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
+
         Route::get('/customer', [\App\Http\Controllers\Admin\CustomerController::class, 'index'])->name('customers.index');
+        Route::get('/customer/{user}', [\App\Http\Controllers\Admin\CustomerController::class, 'show'])->name('customers.show');
         Route::get('/retur', [\App\Http\Controllers\Admin\ReturnController::class, 'index'])->name('returns.index');
         Route::patch('/retur/{returnRequest}', [\App\Http\Controllers\Admin\ReturnController::class, 'update'])->name('returns.update');
     });

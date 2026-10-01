@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 
 export default function CustomerLayout({ children }) {
-    const { auth, flash, cartCount } = usePage().props;
+    const { auth, flash } = usePage().props;
 
     return (
         <div className="min-h-screen bg-cream flex flex-col">
@@ -29,9 +29,14 @@ export default function CustomerLayout({ children }) {
 
                     <nav className="flex items-center gap-4 text-sm">
                         <Link href={route('wishlist.index')} className="text-gray-600 hover:text-primary">Wishlist</Link>
-                        <Link href={route('cart.index')} className="text-gray-600 hover:text-primary">Keranjang{cartCount > 0 && (<span className="ml-1 rounded-full bg-accent-orange px-1.5 py-0.5 text-[10px] font-bold text-white">{cartCount}</span>)}</Link>
+                        <Link href={route('cart.index')} className="text-gray-600 hover:text-primary">Keranjang</Link>
                         {auth?.user ? (
-                            <Link href={route('dashboard')} className="font-semibold text-primary">{auth.user.name}</Link>
+                            <>
+                                <Link href={route('account.orders')} className="font-semibold text-primary">{auth.user.name}</Link>
+                                <Link href={route('logout')} method="post" as="button" className="text-gray-500 hover:text-danger">
+                                    Keluar
+                                </Link>
+                            </>
                         ) : (
                             <Link href={route('login')} className="font-semibold text-primary">Masuk</Link>
                         )}
