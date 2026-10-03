@@ -20,9 +20,10 @@ Route::get('/produk/{product:slug}', [\App\Http\Controllers\Customer\ProductCont
 Route::get('/tentang-kami', fn () => Inertia::render('Customer/Static/About'))->name('about');
 Route::get('/kontak', fn () => Inertia::render('Customer/Static/Contact'))->name('contact');
 Route::post('/kontak', [\App\Http\Controllers\Customer\ContactController::class, 'store'])->name('contact.store');
-Route::get('/faq', fn () => Inertia::render('Customer/Static/Faq'))->name('faq');
+Route::get('/faq', [\App\Http\Controllers\Customer\FaqController::class, 'index'])->name('faq');
 Route::get('/blog', [\App\Http\Controllers\Customer\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{blogPost:slug}', [\App\Http\Controllers\Customer\BlogController::class, 'show'])->name('blog.show');
+Route::get('/promo', [\App\Http\Controllers\Customer\PromoController::class, 'index'])->name('promo.index');
 Route::get('/syarat-ketentuan', fn () => Inertia::render('Customer/Static/Terms'))->name('terms');
 Route::get('/kebijakan-privasi', fn () => Inertia::render('Customer/Static/Privacy'))->name('privacy');
 
@@ -65,6 +66,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/akun/pesanan/{order}/retur', [\App\Http\Controllers\Customer\ReturnController::class, 'store'])->name('account.orders.return.store');
     Route::get('/akun/alamat', [\App\Http\Controllers\Customer\AddressController::class, 'index'])->name('account.addresses');
 
+    Route::get('/akun/ulasan', [\App\Http\Controllers\Customer\TestimonialController::class, 'index'])->name('account.testimonials.index');
+    Route::post('/akun/ulasan', [\App\Http\Controllers\Customer\TestimonialController::class, 'store'])->name('account.testimonials.store');
+
     // Profile bawaan Breeze
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -82,9 +86,12 @@ Route::middleware(['auth', 'verified', 'role:admin'])
     ->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('produk', \App\Http\Controllers\Admin\ProductController::class);
-        Route::resource('kategori', \App\Http\Controllers\Admin\CategoryController::class);
-        Route::resource('paket', \App\Http\Controllers\Admin\PackageController::class);
+        Route::resource('produk', \App\Http\Controllers\Admin\ProductController::class)
+                        ->parameters(['produk' => 'product']);
+        Route::resource('kategori', \App\Http\Controllers\Admin\CategoryController::class)
+                        ->parameters(['kategori' => 'category']);
+        Route::resource('paket', \App\Http\Controllers\Admin\PackageController::class)
+                        ->parameters(['paket' => 'package']);
 
         Route::get('/pesanan', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
         Route::get('/pesanan/{order}', [\App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
@@ -110,7 +117,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::patch('/pengaturan/kloter/{batch}', [\App\Http\Controllers\Admin\SettingController::class, 'updateBatch'])->name('settings.kloter.update');
         Route::delete('/pengaturan/kloter/{batch}', [\App\Http\Controllers\Admin\SettingController::class, 'destroyBatch'])->name('settings.kloter.destroy');
 
-        Route::resource('pengguna', \App\Http\Controllers\Admin\UserController::class)->except(['show']);
+        Route::resource('pengguna', \App\Http\Controllers\Admin\UserController::class)
+        ->except(['show'])
+        ->parameters(['pengguna' => 'user']);
 
         Route::get('/analitik', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
 
@@ -118,6 +127,23 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/customer/{user}', [\App\Http\Controllers\Admin\CustomerController::class, 'show'])->name('customers.show');
         Route::get('/retur', [\App\Http\Controllers\Admin\ReturnController::class, 'index'])->name('returns.index');
         Route::patch('/retur/{returnRequest}', [\App\Http\Controllers\Admin\ReturnController::class, 'update'])->name('returns.update');
+
+        Route::resource('blog', \App\Http\Controllers\Admin\BlogController::class)->except(['show']);
+
+        Route::get('/faq', [\App\Http\Controllers\Admin\FaqController::class, 'index'])->name('faq.index');
+        Route::post('/faq', [\App\Http\Controllers\Admin\FaqController::class, 'store'])->name('faq.store');
+        Route::patch('/faq/{faq}', [\App\Http\Controllers\Admin\FaqController::class, 'update'])->name('faq.update');
+        Route::delete('/faq/{faq}', [\App\Http\Controllers\Admin\FaqController::class, 'destroy'])->name('faq.destroy');
+
+        Route::get('/testimoni', [\App\Http\Controllers\Admin\TestimonialController::class, 'index'])->name('testimonials.index');
+        Route::post('/testimoni', [\App\Http\Controllers\Admin\TestimonialController::class, 'store'])->name('testimonials.store');
+        Route::patch('/testimoni/{testimonial}/toggle', [\App\Http\Controllers\Admin\TestimonialController::class, 'toggleTampil'])->name('testimonials.toggle');
+        Route::delete('/testimoni/{testimonial}', [\App\Http\Controllers\Admin\TestimonialController::class, 'destroy'])->name('testimonials.destroy');
+
+        Route::get('/banner', [\App\Http\Controllers\Admin\BannerController::class, 'index'])->name('banners.index');
+        Route::post('/banner', [\App\Http\Controllers\Admin\BannerController::class, 'store'])->name('banners.store');
+        Route::patch('/banner/{banner}', [\App\Http\Controllers\Admin\BannerController::class, 'update'])->name('banners.update');
+        Route::delete('/banner/{banner}', [\App\Http\Controllers\Admin\BannerController::class, 'destroy'])->name('banners.destroy');
     });
 
 /*

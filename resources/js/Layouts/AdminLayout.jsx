@@ -4,12 +4,17 @@ const menu = [
     { label: 'Overview', href: route('admin.dashboard'), name: 'admin.dashboard' },
     { label: 'Analitik', href: route('admin.analytics.index'), name: 'admin.analytics.*' },
     { label: 'Pesanan & Rute', href: route('admin.orders.index'), name: 'admin.orders.*' },
+    { label: 'Manajemen Produk', href: route('admin.produk.index'), name: 'admin.produk.*' },
     { label: 'Stok & Sayuran', href: route('admin.stock.index'), name: 'admin.stock.*' },
     { label: 'Keuangan & Kas', href: route('admin.finance.index'), name: 'admin.finance.*' },
     { label: 'Customer', href: route('admin.customers.index'), name: 'admin.customers.*' },
     { label: 'Retur & Komplain', href: route('admin.returns.index'), name: 'admin.returns.*' },
     { label: 'Cetak Invoice', href: route('admin.print.index'), name: 'admin.print.*' },
     { label: 'Pengaturan Lapak', href: route('admin.settings.index'), name: 'admin.settings.*' },
+    { label: 'Blog & Artikel', href: route('admin.blog.index'), name: 'admin.blog.*' },
+    { label: 'FAQ', href: route('admin.faq.index'), name: 'admin.faq.*' },
+    { label: 'Testimoni', href: route('admin.testimonials.index'), name: 'admin.testimonials.*' },
+    { label: 'Banner Promosi', href: route('admin.banners.index'), name: 'admin.banners.*' },
     { label: 'Manajemen Pengguna', href: route('admin.pengguna.index'), name: 'admin.pengguna.*' },
 ];
 
@@ -42,13 +47,6 @@ export default function AdminLayout({ children }) {
                         );
                     })}
                 </nav>
-
-                <div className="p-3">
-                    <div className="bg-cream rounded-xl p-3">
-                        <p className="text-xs font-semibold text-primary">KURIR MAS YAHYA</p>
-                        <p className="text-xs text-text-secondary mt-1">● WA Gateway Lapak — ONLINE</p>
-                    </div>
-                </div>
             </aside>
 
             {/* Main content */}

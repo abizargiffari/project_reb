@@ -13,20 +13,20 @@ export default function Home({ banners = [], deliveryBatches = [], featuredProdu
 
             {/* Hero Section */}
             <section className="max-w-7xl mx-auto px-4 pt-8 grid md:grid-cols-3 gap-6">
-                <div className="md:col-span-2 relative rounded-xl2 overflow-hidden bg-primary min-h-[340px] flex flex-col justify-end p-8 text-white">
+                <div
+                    className="md:col-span-2 relative rounded-xl2 overflow-hidden bg-primary min-h-[340px] flex flex-col justify-end p-8 text-white bg-cover bg-center"
+                    style={banners[0]?.gambar ? { backgroundImage: `linear-gradient(0deg, rgba(30,77,59,0.85), rgba(30,77,59,0.35)), url(/storage/${banners[0].gambar})` } : undefined}
+                >
                     <h1 className="text-3xl md:text-4xl font-bold leading-tight max-w-md">
-                        Sayur Panen Subuh Langsung ke Pagar Rumah
+                        {banners[0]?.judul ?? 'Sayur Panen Subuh Langsung ke Pagar Rumah'}
                     </h1>
                     <p className="text-white/80 mt-2 max-w-md text-sm">
                         Bebas biaya komisi aplikasi, harga jujur setara warung tetangga, dan garansi ganti baru di tempat jika ada sayur layu.
                     </p>
                     <div className="flex gap-3 mt-6">
-                        <Link href={route('catalog.index')} className="bg-accent-orange text-white px-6 py-3 rounded-xl font-semibold">
+                        <Link href={banners[0]?.link ?? route('catalog.index')} className="bg-accent-orange text-white px-6 py-3 rounded-xl font-semibold">
                             Mulai Pilih Belanjaan
                         </Link>
-                        <button className="border border-white text-white px-6 py-3 rounded-xl font-semibold">
-                            Sayur Busuk? Ganti Tanpa Ribet
-                        </button>
                     </div>
                 </div>
 

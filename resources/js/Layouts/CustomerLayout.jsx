@@ -29,7 +29,7 @@ export default function CustomerLayout({ children }) {
 
                     <nav className="flex items-center gap-4 text-sm">
                         <Link href={route('wishlist.index')} className="text-gray-600 hover:text-primary">Wishlist</Link>
-                        <Link href={route('cart.index')} className="text-gray-600 hover:text-primary">Keranjang</Link>
+                        <Link href={route('cart.index')} className="text-gray-600 hover:text-primary">🛒</Link>
                         {auth?.user ? (
                             <>
                                 <Link href={route('account.orders')} className="font-semibold text-primary">{auth.user.name}</Link>
@@ -46,6 +46,9 @@ export default function CustomerLayout({ children }) {
                 <div className="max-w-7xl mx-auto px-4 pb-3 flex gap-2 overflow-x-auto">
                     <Link href={route('catalog.index')} className="px-4 py-1.5 rounded-full bg-primary text-white text-sm font-medium whitespace-nowrap">
                         Semua Sayur
+                    </Link>
+                    <Link href={route('promo.index')} className="px-4 py-1.5 rounded-full bg-accent-orange text-white text-sm font-medium whitespace-nowrap">
+                        Promo & Diskon
                     </Link>
                 </div>
             </header>
@@ -69,6 +72,9 @@ export default function CustomerLayout({ children }) {
                         <Link href={route('about')} className="block text-white/70 hover:text-white">Tentang Kami</Link>
                         <Link href={route('faq')} className="block text-white/70 hover:text-white">FAQ</Link>
                         <Link href={route('contact')} className="block text-white/70 hover:text-white">Kontak</Link>
+                        {auth?.user && (
+                            <Link href={route('account.testimonials.index')} className="block text-white/70 hover:text-white">Ulasan Saya</Link>
+                        )}
                     </div>
                     <div>
                         <p className="font-bold mb-2">Kebijakan</p>
