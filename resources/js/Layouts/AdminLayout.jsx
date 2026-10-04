@@ -5,6 +5,7 @@ const menu = [
     { label: 'Analitik', href: route('admin.analytics.index'), name: 'admin.analytics.*' },
     { label: 'Pesanan & Rute', href: route('admin.orders.index'), name: 'admin.orders.*' },
     { label: 'Manajemen Produk', href: route('admin.produk.index'), name: 'admin.produk.*' },
+    { label: 'Paket Hemat', href: route('admin.paket.index'), name: 'admin.paket.*' },
     { label: 'Stok & Sayuran', href: route('admin.stock.index'), name: 'admin.stock.*' },
     { label: 'Keuangan & Kas', href: route('admin.finance.index'), name: 'admin.finance.*' },
     { label: 'Customer', href: route('admin.customers.index'), name: 'admin.customers.*' },
@@ -47,6 +48,13 @@ export default function AdminLayout({ children }) {
                         );
                     })}
                 </nav>
+
+                <div className="p-3">
+                    <div className="bg-cream rounded-xl p-3">
+                        <p className="text-xs font-semibold text-primary">KURIR MAS YAHYA</p>
+                        <p className="text-xs text-text-secondary mt-1">● WA Gateway Lapak — ONLINE</p>
+                    </div>
+                </div>
             </aside>
 
             {/* Main content */}
