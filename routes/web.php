@@ -17,7 +17,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/katalog', [\App\Http\Controllers\Customer\CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/produk/{product:slug}', [\App\Http\Controllers\Customer\ProductController::class, 'show'])->name('product.show');
-Route::get('/tentang-kami', fn () => Inertia::render('Customer/Static/About'))->name('about');
+Route::get('/tentang-kami', [\App\Http\Controllers\Customer\PageController::class, 'about'])->name('about');
 Route::get('/kontak', fn () => Inertia::render('Customer/Static/Contact'))->name('contact');
 Route::post('/kontak', [\App\Http\Controllers\Customer\ContactController::class, 'store'])->name('contact.store');
 Route::get('/faq', [\App\Http\Controllers\Customer\FaqController::class, 'index'])->name('faq');
