@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             PackageSeeder::class,
             DeliveryBatchSeeder::class,
+            VoucherSeeder::class,
+            AdminNotificationSettingSeeder::class,
             AddressSeeder::class,
             TestimonialSeeder::class,
             FaqSeeder::class,
