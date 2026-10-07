@@ -1,11 +1,30 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Link, useForm } from '@inertiajs/react';
+
+const inputClass =
+    'mt-2 block h-[54px] w-full rounded-2xl border border-[#ECECE4] bg-white px-7 text-sm text-gray-900 ' +
+    'placeholder:text-gray-300 focus:border-auth-action focus:outline-none focus:ring-1 focus:ring-auth-action';
+
+function Field({ id, label, error, className = '', ...props }) {
+    return (
+        <div className={className}>
+            <label htmlFor={id} className="block text-sm text-gray-900">
+                {label}
+            </label>
+            <input
+                id={id}
+                name={id}
+                className={inputClass}
+                aria-invalid={error ? 'true' : undefined}
+                {...props}
+            />
+            {error && <p className="mt-2 text-sm text-danger">{error}</p>}
+        </div>
+    );
+}
 
 export default function Register() {
+    // "Username" di desain disimpan ke kolom `name` (satu-satunya kolom nama di tabel users).
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -15,106 +34,82 @@ export default function Register() {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
 
     return (
-        <GuestLayout>
-            <Head title="Register" />
+        <AuthenticatedLayout
+            title="Daftar"
+            reverse
+                
+        >
+            <h2 className="text-2xl font-semibold text-gray-950">Daftar Sekarang</h2>
+            <p className="mt-4 text-sm text-gray-900">
+                Sudah punya akun?{' '}
+                <Link href={route('login')} className="text-auth-action hover:underline">
+                    Masuk
+                </Link>
+            </p>
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
+            <form onSubmit={submit} className="mt-8" noValidate>
+                <Field
+                    id="name"
+                    label="Username"
+                    type="text"
+                    value={data.name}
+                    onChange={(e) => setData('name', e.target.value)}
+                    placeholder="Masukkan username anda"
+                    autoComplete="username"
+                    autoFocus
+                    error={errors.name}
+                />
 
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
+                <Field
+                    id="email"
+                    label="Email"
+                    type="email"
+                    value={data.email}
+                    onChange={(e) => setData('email', e.target.value)}
+                    placeholder="Masukkan email anda"
+                    autoComplete="email"
+                    error={errors.email}
+                    className="mt-6"
+                />
 
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
+                <Field
+                    id="password"
+                    label="Password"
+                    type="password"
+                    value={data.password}
+                    onChange={(e) => setData('password', e.target.value)}
+                    placeholder="Buatkan password anda"
+                    autoComplete="new-password"
+                    error={errors.password}
+                    className="mt-6"
+                />
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                <Field
+                    id="password_confirmation"
+                    label="Konfirmasi Password"
+                    type="password"
+                    value={data.password_confirmation}
+                    onChange={(e) => setData('password_confirmation', e.target.value)}
+                    placeholder="Ulangi password anda"
+                    autoComplete="new-password"
+                    error={errors.password_confirmation}
+                    className="mt-6"
+                />
 
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
-                    </PrimaryButton>
-                </div>
+                <button
+                    type="submit"
+                    disabled={processing}
+                    className="mt-8 h-[49px] w-full rounded-xl bg-auth-action text-base font-medium text-white transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-auth-action focus:ring-offset-2 focus:ring-offset-auth-paper disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                    {processing ? 'Memproses...' : 'Daftar'}
+                </button>
             </form>
-        </GuestLayout>
+        </AuthenticatedLayout>
     );
 }
