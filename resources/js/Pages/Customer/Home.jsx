@@ -1,5 +1,6 @@
 import CustomerLayout from '@/Layouts/CustomerLayout';
 import Badge from '@/Components/UI/Badge';
+import WishlistButton from '@/Components/UI/WishlistButton';
 import { Head, Link, router } from '@inertiajs/react';
 
 export default function Home({ banners = [], deliveryBatches = [], featuredProducts = [], packages = [], testimonials = [] }) {
@@ -68,11 +69,12 @@ export default function Home({ banners = [], deliveryBatches = [], featuredProdu
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {featuredProducts.map((product) => (
-                        <div key={product.id} className="bg-white rounded-xl2 shadow-sm overflow-hidden flex flex-col">
+                        <div key={product.id} className="relative bg-white rounded-xl2 shadow-sm overflow-hidden flex flex-col">
                             <Link href={route('product.show', product.slug)} className="block relative aspect-square bg-cream">
                                 {product.gambar && <img src={`/storage/${product.gambar}`} alt={product.nama} className="w-full h-full object-cover" />}
                                 {product.badge && <span className="absolute top-2 left-2"><Badge color="orange">{product.badge}</Badge></span>}
                             </Link>
+                            <WishlistButton productId={product.id} />
                             <div className="p-3 flex-1 flex flex-col">
                                 <p className="text-xs text-text-secondary">{product.category?.nama}</p>
                                 <Link href={route('product.show', product.slug)} className="font-semibold text-sm mt-1 line-clamp-2">{product.nama}</Link>

@@ -120,14 +120,8 @@ export default function Index({ items, summary, voucher, voucherError, batches, 
                             no="2"
                             title="Pilih Jam Antar Kurir"
                             subtitle="Jadwal pengantaran hari ini"
-                            right={<Badge color="success"> Antar Segar Berpendingin</Badge>}
                         >
                             <div className="mb-4 flex items-start gap-3 rounded-xl bg-cream p-3">
-                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white">🛵</div>
-                                <div>
-                                    <p className="text-sm font-bold">Diantar oleh Mas Yahya — Kurir Tetangga Ciganjur</p>
-                                    <p className="text-xs text-text-secondary">Sayur diantar rapi ke depan rumah, aman dan tepat waktu.</p>
-                                </div>
                             </div>
 
                             <div className="grid gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Pilih jam antar">
@@ -162,10 +156,8 @@ export default function Index({ items, summary, voucher, voucherError, batches, 
                             <div className="space-y-3" role="radiogroup" aria-label="Metode pembayaran">
                                 <SelectionCard selected={data.metode_bayar === 'cod'} onSelect={() => setData('metode_bayar', 'cod')}>
                                     <div className="flex items-center gap-2 pr-8">
-                                        <p className="font-bold">Bayar di Tempat (COD Titip Pagar/Tunai)</p>
-                                        <Badge color="orange">FAVORIT WARGA</Badge>
+                                        <p className="font-bold">Bayar di Tempat </p>
                                     </div>
-                                    <p className="mt-1 text-xs text-text-secondary">Bayar tunai ke Mas Yahya saat sayur tiba. Tanpa biaya tambahan.</p>
 
                                     {data.metode_bayar === 'cod' && (
                                         <div className="mt-4 border-t border-gray-100 pt-4" onClick={(e) => e.stopPropagation()}>
@@ -202,7 +194,7 @@ export default function Index({ items, summary, voucher, voucherError, batches, 
 
                                 <SelectionCard selected={data.metode_bayar === 'qris'} onSelect={() => setData('metode_bayar', 'qris')}>
                                     <div className="flex items-center gap-2 pr-8">
-                                        <p className="font-bold">QRIS Dinamis (Verifikasi Otomatis)</p>
+                                        <p className="font-bold">QRIS</p>
                                         <Badge color="success">BEBAS ADMIN</Badge>
                                     </div>
                                     <p className="mt-1 text-xs text-text-secondary">Scan dengan GoPay, OVO, ShopeePay, atau m-banking. Pesanan otomatis terkonfirmasi setelah bayar.</p>
@@ -294,7 +286,7 @@ export default function Index({ items, summary, voucher, voucherError, batches, 
                                 disabled={processing}
                                 className="mt-5 w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-60"
                             >
-                                {processing ? 'Memproses...' : `🔒 Konfirmasi & Bayar Pesanan (${rupiah(summary.total)})`}
+                                {processing ? 'Memproses...' : ` Konfirmasi & Bayar Pesanan (${rupiah(summary.total)})`}
                             </button>
                             <p className="mt-2 text-center text-[11px] text-text-secondary">
                                 Dengan menekan tombol ini, kamu menyetujui jadwal antar yang dipilih.

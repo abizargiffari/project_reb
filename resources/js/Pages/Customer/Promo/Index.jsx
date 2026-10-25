@@ -1,5 +1,6 @@
 import CustomerLayout from '@/Layouts/CustomerLayout';
 import Badge from '@/Components/UI/Badge';
+import WishlistButton from '@/Components/UI/WishlistButton';
 import { rupiah } from '@/Utils/format';
 import { Head, Link, router } from '@inertiajs/react';
 
@@ -30,11 +31,12 @@ export default function Index({ banners, produk }) {
                 ) : (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {produk.map((p) => (
-                            <div key={p.id} className="bg-white rounded-xl2 shadow-sm overflow-hidden flex flex-col">
+                            <div key={p.id} className="relative bg-white rounded-xl2 shadow-sm overflow-hidden flex flex-col">
                                 <Link href={route('product.show', p.slug)} className="block relative aspect-square bg-cream">
                                     {p.gambar && <img src={`/storage/${p.gambar}`} alt={p.nama} className="w-full h-full object-cover" />}
                                     <span className="absolute top-2 left-2"><Badge color="orange">DISKON</Badge></span>
                                 </Link>
+                            <WishlistButton productId={p.id} />
                                 <div className="p-3 flex-1 flex flex-col">
                                     <p className="text-xs text-text-secondary">{p.category?.nama}</p>
                                     <Link href={route('product.show', p.slug)} className="font-semibold text-sm mt-1 line-clamp-2">{p.nama}</Link>

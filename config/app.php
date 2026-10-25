@@ -65,7 +65,9 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    // Bisnis ini beroperasi di Jakarta (UTC+7). Dengan 'UTC', "hari ini" baru berganti pukul 07:00 WIB,
+    // sehingga rute kurir, omzet harian, dan filter pesanan Subuh jadi salah hari. Bisa diubah lewat .env.
+    'timezone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
 
     /*
     |--------------------------------------------------------------------------

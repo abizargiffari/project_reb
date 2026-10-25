@@ -1,5 +1,6 @@
 import CustomerLayout from '@/Layouts/CustomerLayout';
 import Badge from '@/Components/UI/Badge';
+import WishlistButton from '@/Components/UI/WishlistButton';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 
 export default function Show({ product, produkTerkait }) {
@@ -60,6 +61,8 @@ export default function Show({ product, produkTerkait }) {
                             Habis Pagi Ini
                         </button>
                     )}
+
+                    <WishlistButton productId={product.id} variant="label" className="mt-3 w-full" />
                 </div>
             </div>
 

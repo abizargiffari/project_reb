@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Tabel di panel admin dibungkus kartu `overflow-hidden` (supaya sudutnya membulat).
+ * Di layar HP, tabel yang lebih lebar dari layar jadi TERPOTONG tanpa bisa digeser.
+ * Aturan ini membuat pembungkus yang langsung berisi <table> bisa digeser mendatar,
+ * sementara sudut membulatnya tetap terjaga.
+ */
+@layer components {
+    .overflow-hidden:has(> table) {
+        overflow-x: auto;
+    }
+    .overflow-hidden > table {
+        min-width: 36rem;
+    }
+}

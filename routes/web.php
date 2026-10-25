@@ -18,6 +18,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/katalog', [\App\Http\Controllers\Customer\CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/produk/{product:slug}', [\App\Http\Controllers\Customer\ProductController::class, 'show'])->name('product.show');
 Route::get('/tentang-kami', [\App\Http\Controllers\Customer\PageController::class, 'about'])->name('about');
+Route::get('/cara-pemesanan', [\App\Http\Controllers\Customer\PageController::class, 'howToOrder'])->name('how-to-order');
 Route::get('/kontak', fn () => Inertia::render('Customer/Static/Contact'))->name('contact');
 Route::post('/kontak', [\App\Http\Controllers\Customer\ContactController::class, 'store'])->name('contact.store');
 Route::get('/faq', [\App\Http\Controllers\Customer\FaqController::class, 'index'])->name('faq');
@@ -65,6 +66,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/akun/pesanan/{order}', [\App\Http\Controllers\Customer\OrderHistoryController::class, 'show'])->name('account.orders.show');
     Route::post('/akun/pesanan/{order}/retur', [\App\Http\Controllers\Customer\ReturnController::class, 'store'])->name('account.orders.return.store');
     Route::get('/akun/alamat', [\App\Http\Controllers\Customer\AddressController::class, 'index'])->name('account.addresses');
+    Route::post('/akun/alamat', [\App\Http\Controllers\Customer\AddressController::class, 'store'])->name('account.addresses.store');
+    Route::patch('/akun/alamat/{address}', [\App\Http\Controllers\Customer\AddressController::class, 'update'])->name('account.addresses.update');
+    Route::patch('/akun/alamat/{address}/utama', [\App\Http\Controllers\Customer\AddressController::class, 'setDefault'])->name('account.addresses.default');
+    Route::delete('/akun/alamat/{address}', [\App\Http\Controllers\Customer\AddressController::class, 'destroy'])->name('account.addresses.destroy');
 
     Route::get('/akun/ulasan', [\App\Http\Controllers\Customer\TestimonialController::class, 'index'])->name('account.testimonials.index');
     Route::post('/akun/ulasan', [\App\Http\Controllers\Customer\TestimonialController::class, 'store'])->name('account.testimonials.store');
@@ -87,10 +92,13 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('produk', \App\Http\Controllers\Admin\ProductController::class)
+                        ->except(['show'])
                         ->parameters(['produk' => 'product']);
         Route::resource('kategori', \App\Http\Controllers\Admin\CategoryController::class)
+                        ->except(['show'])
                         ->parameters(['kategori' => 'category']);
         Route::resource('paket', \App\Http\Controllers\Admin\PackageController::class)
+                        ->except(['show'])
                         ->parameters(['paket' => 'package']);
 
         Route::get('/pesanan', [\App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
@@ -134,6 +142,15 @@ Route::middleware(['auth', 'verified', 'role:admin'])
         Route::post('/faq', [\App\Http\Controllers\Admin\FaqController::class, 'store'])->name('faq.store');
         Route::patch('/faq/{faq}', [\App\Http\Controllers\Admin\FaqController::class, 'update'])->name('faq.update');
         Route::delete('/faq/{faq}', [\App\Http\Controllers\Admin\FaqController::class, 'destroy'])->name('faq.destroy');
+
+        Route::get('/voucher', [\App\Http\Controllers\Admin\VoucherController::class, 'index'])->name('vouchers.index');
+        Route::post('/voucher', [\App\Http\Controllers\Admin\VoucherController::class, 'store'])->name('vouchers.store');
+        Route::patch('/voucher/{voucher}', [\App\Http\Controllers\Admin\VoucherController::class, 'update'])->name('vouchers.update');
+        Route::delete('/voucher/{voucher}', [\App\Http\Controllers\Admin\VoucherController::class, 'destroy'])->name('vouchers.destroy');
+
+        Route::get('/pesan', [\App\Http\Controllers\Admin\ContactMessageController::class, 'index'])->name('messages.index');
+        Route::patch('/pesan/{message}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'update'])->name('messages.update');
+        Route::delete('/pesan/{message}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'destroy'])->name('messages.destroy');
 
         Route::get('/testimoni', [\App\Http\Controllers\Admin\TestimonialController::class, 'index'])->name('testimonials.index');
         Route::post('/testimoni', [\App\Http\Controllers\Admin\TestimonialController::class, 'store'])->name('testimonials.store');

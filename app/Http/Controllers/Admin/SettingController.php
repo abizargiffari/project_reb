@@ -15,6 +15,7 @@ class SettingController extends Controller
     /** Daftar key setting yang dikelola dari halaman ini (sumber kebenaran tunggal, dipakai index() & update()). */
     private const KEYS = [
         'store_name', 'store_tagline', 'store_address', 'store_phone', 'store_open_hours',
+        'store_email', 'social_whatsapp', 'social_instagram', 'social_facebook',
         'payment_bank_name', 'payment_bank_number', 'payment_bank_holder', 'payment_qris_status',
         'ongkir_flat', 'gratis_ongkir_minimal', 'biaya_kantong', 'area_layanan',
     ];
@@ -37,6 +38,10 @@ class SettingController extends Controller
             'store_address'       => ['nullable', 'string', 'max:500'],
             'store_phone'         => ['nullable', 'string', 'max:30'],
             'store_open_hours'    => ['nullable', 'string', 'max:100'],
+            'store_email'         => ['nullable', 'email', 'max:150'],
+            'social_whatsapp'     => ['nullable', 'string', 'max:30'],
+            'social_instagram'    => ['nullable', 'string', 'max:100'],
+            'social_facebook'     => ['nullable', 'string', 'max:100'],
             'payment_bank_name'   => ['nullable', 'string', 'max:50'],
             'payment_bank_number' => ['nullable', 'string', 'max:50'],
             'payment_bank_holder' => ['nullable', 'string', 'max:100'],

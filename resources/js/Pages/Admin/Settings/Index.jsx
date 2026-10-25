@@ -114,6 +114,16 @@ export default function Index({ settings, batches }) {
                                 <Field label="Telepon"><input className={inputClass} value={data.store_phone} onChange={(e) => setData('store_phone', e.target.value)} /></Field>
                                 <Field label="Jam Operasional"><input className={inputClass} placeholder="05:00 - 18:00 WIB" value={data.store_open_hours} onChange={(e) => setData('store_open_hours', e.target.value)} /></Field>
                             </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field label="Email"><input type="email" className={inputClass} placeholder="halo@warungsayur.com" value={data.store_email ?? ''} onChange={(e) => setData('store_email', e.target.value)} />{errors.store_email && <p className="text-xs text-danger mt-1">{errors.store_email}</p>}</Field>
+                                <Field label="WhatsApp (untuk tombol chat)"><input className={inputClass} placeholder="081234567890" value={data.social_whatsapp ?? ''} onChange={(e) => setData('social_whatsapp', e.target.value)} /></Field>
+                                <Field label="Instagram"><input className={inputClass} placeholder="@warungsayurpulungan" value={data.social_instagram ?? ''} onChange={(e) => setData('social_instagram', e.target.value)} /></Field>
+                                <Field label="Facebook"><input className={inputClass} placeholder="warungsayurpulungan" value={data.social_facebook ?? ''} onChange={(e) => setData('social_facebook', e.target.value)} /></Field>
+                            </div>
+                            <p className="text-xs text-text-secondary -mt-2">
+                                Data ini tampil di footer dan halaman Kontak. Peta lokasi dibuat otomatis dari alamat di atas.
+                                Instagram/Facebook boleh diisi @username atau tautan lengkap. Kolom yang dikosongkan tidak akan ditampilkan.
+                            </p>
                         </>
                     )}
 
