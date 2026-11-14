@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\CartItem;
 use App\Models\ContactMessage;
+use App\Models\Order;
 use App\Models\Setting;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
@@ -54,6 +55,26 @@ class HandleInertiaRequests extends Middleware
             'wishlistIds' => fn () => $request->user()
                 ? Wishlist::where('user_id', $request->user()->id)->pluck('product_id')->all()
                 : [],
+
+            // Pesanan QRIS/VA milik pengguna yang belum dibayar. Dipakai untuk spanduk "Bayar Sekarang" di
+            // semua halaman pelanggan, supaya yang sempat meninggalkan halaman pembayaran bisa kembali.
+            // (COD tidak termasuk: COD memang dibayar saat barang tiba.)
+            'pesananMenungguBayar' => function () use ($request) {
+                if (! $request->user()) {
+                    return null;
+                }
+
+                $query = Order::where('user_id', $request->user()->id)
+                    ->where('metode_bayar', '!=', 'cod')
+                    ->where('status_pembayaran', 'pending')
+                    ->where('status_pesanan', '!=', 'dibatalkan');
+
+                $terbaru = (clone $query)->latest()->first(['id', 'order_number', 'total']);
+
+                return $terbaru
+                    ? ['id' => $terbaru->id, 'order_number' => $terbaru->order_number, 'total' => $terbaru->total, 'jumlah' => $query->count()]
+                    : null;
+            },
 
             // Angka kecil di menu admin "Pesan Masuk". Hanya dihitung untuk admin.
             'unreadMessages' => fn () => $request->user()?->role === 'admin'

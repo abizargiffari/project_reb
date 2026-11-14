@@ -1,4 +1,4 @@
-import { sosmedUrl, waUrl } from '@/Utils/format';
+import { rupiah, sosmedUrl, waUrl } from '@/Utils/format';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -37,10 +37,12 @@ function Badge({ n }) {
 }
 
 export default function CustomerLayout({ children }) {
-    const { auth, flash, cartCount = 0, wishlistIds = [], toko = {} } = usePage().props;
+    const { auth, flash, cartCount = 0, wishlistIds = [], toko = {}, pesananMenungguBayar } = usePage().props;
     const [menuOpen, setMenuOpen] = useState(false);
 
     const wa = waUrl(toko.whatsapp || toko.telepon);
+    const ig = sosmedUrl('instagram', toko.instagram);
+    const fb = sosmedUrl('facebook', toko.facebook);
     const area = toko.area_layanan || 'Ciganjur, Jagakarsa & Sekitarnya';
 
     const linkAkun = [
@@ -64,15 +66,17 @@ export default function CustomerLayout({ children }) {
                         <div className="w-9 h-9 rounded-full bg-primary" />
                         <div>
                             <p className="font-bold text-primary leading-tight">Sayur Pulungan</p>
-                            <p className="text-[10px] text-text-secondary">SEGAR SETIAP PAGI</p>
+                            <p className="text-[10px] text-text-secondary">SEGAR SETIAP PAGI • AREA</p>
                         </div>
                     </Link>
 
                     <SearchForm className="hidden md:block flex-1 max-w-md" />
 
                     <nav className="flex items-center gap-3 text-sm">
-                        <Link href={route('wishlist.index')} className="hidden md:flex items-center text-gray-600 hover:text-primary" aria-label="Wishlist">
-                            ♡ Wishlist<Badge n={wishlistIds.length} />
+                        <Link href={route('wishlist.index')} className="flex items-center text-gray-600 hover:text-primary" aria-label="Wishlist">
+                            <span aria-hidden="true" className="text-xl leading-none md:text-base">♡</span>
+                            <span className="ml-1 hidden md:inline">Wishlist</span>
+                            <Badge n={wishlistIds.length} />
                         </Link>
                         <Link href={route('cart.index')} className="flex items-center text-gray-600 hover:text-primary" aria-label="Keranjang">
                             🛒<Badge n={cartCount} />
@@ -134,6 +138,8 @@ export default function CustomerLayout({ children }) {
                         <div className="grid grid-cols-2 gap-2 text-sm">
                             <Link href={route('catalog.index')} className="rounded-lg bg-cream px-3 py-2 font-medium">Semua Sayur</Link>
                             <Link href={route('promo.index')} className="rounded-lg bg-cream px-3 py-2 font-medium">Promo & Diskon</Link>
+                            <Link href={route('blog.index')} className="rounded-lg bg-cream px-3 py-2 font-medium">Blog</Link>
+                            <Link href={route('how-to-order')} className="rounded-lg bg-cream px-3 py-2 font-medium">Cara Pemesanan</Link>
                         </div>
                         {auth?.user ? (
                             <div className="space-y-1 border-t border-gray-100 pt-3 text-sm">
@@ -158,8 +164,33 @@ export default function CustomerLayout({ children }) {
                     <Link href={route('promo.index')} className="px-4 py-1.5 rounded-full bg-accent-orange text-white text-sm font-medium whitespace-nowrap">
                         Promo & Diskon
                     </Link>
+                    <Link href={route('blog.index')} className="px-4 py-1.5 rounded-full bg-cream text-gray-700 text-sm font-medium whitespace-nowrap">
+                        Blog
+                    </Link>
+                    <Link href={route('how-to-order')} className="px-4 py-1.5 rounded-full bg-cream text-gray-700 text-sm font-medium whitespace-nowrap">
+                        Cara Pemesanan
+                    </Link>
                 </div>
             </header>
+
+            {pesananMenungguBayar && !route().current('checkout.success') && (
+                <div className="border-b border-orange-100 bg-orange-50">
+                    <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2.5 text-sm">
+                        <p className="min-w-0 text-orange-900">
+                            <strong>Menunggu pembayaran:</strong>{' '}
+                            {pesananMenungguBayar.jumlah > 1
+                                ? `${pesananMenungguBayar.jumlah} pesanan belum dibayar`
+                                : `pesanan ${pesananMenungguBayar.order_number} • ${rupiah(pesananMenungguBayar.total)}`}
+                        </p>
+                        <Link
+                            href={pesananMenungguBayar.jumlah > 1 ? route('account.orders') : route('checkout.success', pesananMenungguBayar.id)}
+                            className="whitespace-nowrap rounded-lg bg-accent-orange px-3 py-1.5 text-xs font-bold text-white"
+                        >
+                            {pesananMenungguBayar.jumlah > 1 ? 'Lihat Pesanan' : 'Bayar Sekarang'}
+                        </Link>
+                    </div>
+                </div>
+            )}
 
             {flash?.success && (
                 <div className="max-w-7xl mx-auto w-full px-4 pt-4">
@@ -199,9 +230,11 @@ export default function CustomerLayout({ children }) {
                         {toko.telepon && <a href={`tel:${toko.telepon}`} className="mt-1 block text-white/70 hover:text-white">{toko.telepon}</a>}
                         {toko.email && <a href={`mailto:${toko.email}`} className="block text-white/70 hover:text-white">{toko.email}</a>}
                         {toko.jam_operasional && <p className="mt-1 text-white/70">Buka {toko.jam_operasional}</p>}
-                        {(wa) && (
+                        {(wa || ig || fb) && (
                             <div className="mt-2 flex gap-3">
                                 {wa && <a href={wa} target="_blank" rel="noreferrer" className="text-white/70 hover:text-white">WhatsApp</a>}
+                                {ig && <a href={ig} target="_blank" rel="noreferrer" className="text-white/70 hover:text-white">Instagram</a>}
+                                {fb && <a href={fb} target="_blank" rel="noreferrer" className="text-white/70 hover:text-white">Facebook</a>}
                             </div>
                         )}
                     </div>

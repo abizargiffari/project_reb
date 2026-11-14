@@ -31,7 +31,7 @@ export default function Wishlist({ produk }) {
                             <div key={p.id} className="relative flex flex-col overflow-hidden rounded-xl2 bg-white shadow-sm">
                                 <Link href={route('product.show', p.slug)} className="relative block aspect-square bg-cream">
                                     {p.gambar && <img src={`/storage/${p.gambar}`} alt={p.nama} loading="lazy" className="h-full w-full object-cover" />}
-                                    {p.badge && <span className="absolute left-2 top-2"><Badge color="orange">{p.badge}</Badge></span>}
+                                    {p.badge && <span className="absolute left-2 top-2 max-w-[calc(100%-3.5rem)]"><Badge color="orange">{p.badge}</Badge></span>}
                                 </Link>
                                 <WishlistButton productId={p.id} />
                                 <div className="flex flex-1 flex-col p-3">

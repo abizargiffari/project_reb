@@ -9,7 +9,7 @@ class CashTransaction extends Model
     protected $fillable = ['tanggal', 'tipe', 'kategori', 'nominal', 'keterangan', 'dibuat_oleh'];
 
     protected $casts = [
-        'tanggal' => 'date',
+        'tanggal' => 'date:Y-m-d',
         'nominal' => 'decimal:2',
     ];
 

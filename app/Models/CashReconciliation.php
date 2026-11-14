@@ -12,7 +12,7 @@ class CashReconciliation extends Model
     ];
 
     protected $casts = [
-        'tanggal' => 'date',
+        'tanggal' => 'date:Y-m-d',
         'total_tagihan' => 'decimal:2',
         'uang_fisik_diterima' => 'decimal:2',
         'selisih' => 'decimal:2',

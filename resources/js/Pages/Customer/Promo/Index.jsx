@@ -34,7 +34,7 @@ export default function Index({ banners, produk }) {
                             <div key={p.id} className="relative bg-white rounded-xl2 shadow-sm overflow-hidden flex flex-col">
                                 <Link href={route('product.show', p.slug)} className="block relative aspect-square bg-cream">
                                     {p.gambar && <img src={`/storage/${p.gambar}`} alt={p.nama} className="w-full h-full object-cover" />}
-                                    <span className="absolute top-2 left-2"><Badge color="orange">DISKON</Badge></span>
+                                    <span className="absolute top-2 left-2 max-w-[calc(100%-3.5rem)]"><Badge color="orange">DISKON</Badge></span>
                                 </Link>
                             <WishlistButton productId={p.id} />
                                 <div className="p-3 flex-1 flex flex-col">

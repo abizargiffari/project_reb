@@ -8,7 +8,7 @@ class CourierRoute extends Model
 {
     protected $fillable = ['courier_id', 'delivery_batch_id', 'tanggal', 'status'];
 
-    protected $casts = ['tanggal' => 'date'];
+    protected $casts = ['tanggal' => 'date:Y-m-d'];
 
     public function courier()
     {

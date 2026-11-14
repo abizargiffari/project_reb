@@ -17,8 +17,8 @@ class Voucher extends Model
     protected $casts = [
         'nilai' => 'decimal:2',
         'minimal_belanja' => 'decimal:2',
-        'berlaku_dari' => 'date',
-        'berlaku_sampai' => 'date',
+        'berlaku_dari' => 'date:Y-m-d',
+        'berlaku_sampai' => 'date:Y-m-d',
         'status_aktif' => 'boolean',
     ];
 
@@ -31,9 +31,11 @@ class Voucher extends Model
     {
         if (!$this->status_aktif) return false;
         if ($this->kuota !== null && $this->terpakai >= $this->kuota) return false;
-        $today = now()->toDateString();
-        if ($this->berlaku_dari && $today < $this->berlaku_dari) return false;
-        if ($this->berlaku_sampai && $today > $this->berlaku_sampai) return false;
+        // Bandingkan sesama objek tanggal (jam 00:00 zona aplikasi). Membandingkan STRING '2026-10-04'
+        // dengan objek tanggal membuat voucher ditolak di hari pertama berlakunya.
+        $today = now()->startOfDay();
+        if ($this->berlaku_dari && $today->lt($this->berlaku_dari)) return false;
+        if ($this->berlaku_sampai && $today->gt($this->berlaku_sampai)) return false;
         return true;
     }
 }

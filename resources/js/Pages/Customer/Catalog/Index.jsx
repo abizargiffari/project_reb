@@ -78,7 +78,7 @@ export default function Index({ products, categories, filters }) {
                                     <img src={`/storage/${product.gambar}`} alt={product.nama} className="w-full h-full object-cover" />
                                 )}
                                 {product.badge && (
-                                    <span className="absolute top-2 left-2">
+                                    <span className="absolute top-2 left-2 max-w-[calc(100%-3.5rem)]">
                                         <Badge color="orange">{product.badge}</Badge>
                                     </span>
                                 )}
