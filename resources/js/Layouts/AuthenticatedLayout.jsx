@@ -1,10 +1,5 @@
 import { Head } from '@inertiajs/react';
 
-/**
- * Layout halaman auth (Login / Register / dst):
- * - Mobile  : banner hijau tua di atas, form di bawah
- * - Desktop : dua panel. Panel tagline di kiri (Login) atau kanan (Register, prop `reverse`)
- */
 function Leaf({ className = '', flip = false }) {
     return (
         <svg
@@ -60,11 +55,6 @@ export default function AuthenticatedLayout({
                 >
                     {children}
                 </div>
-
-                <footer className="mt-12 text-center text-xs leading-6 text-gray-500 lg:mt-auto">
-                    <p>PT. Warung Sayur Pulungan</p>
-                    <p>Beta Ver 2.0.1</p>
-                </footer>
             </main>
         </div>
     );

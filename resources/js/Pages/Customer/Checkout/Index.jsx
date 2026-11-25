@@ -8,8 +8,6 @@ import { useEffect, useState } from 'react';
 const inputClass =
     'w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-primary focus:outline-none';
 
-// Didefinisikan DI LUAR komponen utama: kalau di dalam, React menganggapnya komponen baru
-// setiap render dan input kehilangan fokus tiap kali mengetik.
 function Field({ label, required, optional, error, children }) {
     return (
         <div className="mb-4">
@@ -120,15 +118,8 @@ export default function Index({ items, summary, voucher, voucherError, batches, 
                             no="2"
                             title="Pilih Jam Antar Kurir"
                             subtitle="Jadwal pengantaran hari ini"
-                            right={<Badge color="success"> Antar Segar Berpendingin</Badge>}
+                            right={<Badge color="success"> Antar Segar</Badge>}
                         >
-                            <div className="mb-4 flex items-start gap-3 rounded-xl bg-cream p-3">
-                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white">🛵</div>
-                                <div>
-                                    <p className="text-sm font-bold">Diantar oleh Mas Yahya — Kurir Tetangga Ciganjur</p>
-                                    <p className="text-xs text-text-secondary">Sayur diantar rapi ke depan rumah, aman dan tepat waktu.</p>
-                                </div>
-                            </div>
 
                             <div className="grid gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Pilih jam antar">
                                 {batches.map((b) => {
@@ -294,7 +285,7 @@ export default function Index({ items, summary, voucher, voucherError, batches, 
                                 disabled={processing}
                                 className="mt-5 w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-white hover:bg-primary-dark disabled:opacity-60"
                             >
-                                {processing ? 'Memproses...' : `🔒 Konfirmasi & Bayar Pesanan (${rupiah(summary.total)})`}
+                                {processing ? 'Memproses...' : `Konfirmasi & Bayar Pesanan (${rupiah(summary.total)})`}
                             </button>
                             <p className="mt-2 text-center text-[11px] text-text-secondary">
                                 Dengan menekan tombol ini, kamu menyetujui jadwal antar yang dipilih.

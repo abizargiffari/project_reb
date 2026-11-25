@@ -1,8 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-// Dibangun di dalam fungsi (bukan di level modul) supaya route() baru dipanggil saat render,
-// bukan saat file di-import — lebih aman terhadap urutan pemuatan Ziggy.
 function buatMenu() {
     return [
         {
@@ -59,12 +57,12 @@ export default function AdminLayout({ children }) {
 
     return (
         <div className="min-h-screen bg-cream">
-            {/* Latar gelap di belakang drawer (hanya layar kecil) */}
+            {}
             {drawerOpen && (
                 <div className="fixed inset-0 z-20 bg-black/40 lg:hidden" onClick={() => setDrawerOpen(false)} aria-hidden="true" />
             )}
 
-            {/* Sidebar: drawer di layar kecil, tetap terlihat di layar >= lg */}
+            {}
             <aside
                 className={`fixed inset-y-0 left-0 z-30 flex w-64 flex-col border-r border-gray-100 bg-white transition-transform duration-200 lg:translate-x-0 ${
                     drawerOpen ? 'translate-x-0' : '-translate-x-full'

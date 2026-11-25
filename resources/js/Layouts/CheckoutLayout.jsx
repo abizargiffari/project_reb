@@ -43,7 +43,7 @@ export default function CheckoutLayout({ children, activeStep = 3 }) {
             <main className="flex-1">{children}</main>
 
             <footer className="border-t border-gray-100 bg-white py-4 text-center text-xs text-text-secondary">
-                🚚 Antar Pagi 06:00–09:00 WIB • ✓ Timbangan Jujur & Amanah • © {new Date().getFullYear()} Warung Sayur Pulungan
+                Antar Pagi 06:00–09:00 WIB • ✓ Timbangan Jujur & Amanah • © {new Date().getFullYear()} Warung Sayur Pulungan
             </footer>
         </div>
     );

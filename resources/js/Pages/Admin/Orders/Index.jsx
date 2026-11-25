@@ -70,7 +70,7 @@ export default function Index({ orders, batches, couriers, filters }) {
             </div>
 
             <div className="bg-cream border border-dashed border-gray-300 rounded-xl2 p-4 mb-4 flex flex-wrap items-end gap-3">
-                <p className="text-sm font-semibold text-primary w-full mb-1">🛵 Buat Rute Sekaligus (per kloter)</p>
+                <p className="text-sm font-semibold text-primary w-full mb-1">Buat Rute Sekaligus (per kloter)</p>
                 <p className="text-xs text-text-secondary w-full -mt-2 mb-1">
                     Menugaskan SEMUA pesanan kloter terpilih (tanggal & kloter dari filter di atas) yang belum ada kurirnya ke satu kurir.
                 </p>

@@ -3,7 +3,6 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
-// Didefinisikan di luar komponen utama supaya input tidak kehilangan fokus tiap render.
 function SearchForm({ className = '' }) {
     const [q, setQ] = useState(() =>
         typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('q') ?? '' : ''
@@ -63,10 +62,10 @@ export default function CustomerLayout({ children }) {
             <header className="bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
                     <Link href={route('home')} className="flex items-center gap-2 flex-shrink-0">
-                        <div className="w-9 h-9 rounded-full bg-primary" />
+                        {/* <div className="w-9 h-9 rounded-full bg-primary" /> */}
                         <div>
-                            <p className="font-bold text-primary leading-tight">Sayur Pulungan</p>
-                            <p className="text-[10px] text-text-secondary">SEGAR SETIAP PAGI • AREA</p>
+                            {/* <p className="font-bold text-primary leading-tight">Sayur Pulungan</p>
+                            <p className="text-[10px] text-text-secondary">SEGAR SETIAP PAGI • AREA</p> */}
                         </div>
                     </Link>
 
@@ -75,7 +74,7 @@ export default function CustomerLayout({ children }) {
                     <nav className="flex items-center gap-3 text-sm">
                         <Link href={route('wishlist.index')} className="flex items-center text-gray-600 hover:text-primary" aria-label="Wishlist">
                             <span aria-hidden="true" className="text-xl leading-none md:text-base">♡</span>
-                            <span className="ml-1 hidden md:inline">Wishlist</span>
+                            <span className="ml-1 hidden md:inline"></span>
                             <Badge n={wishlistIds.length} />
                         </Link>
                         <Link href={route('cart.index')} className="flex items-center text-gray-600 hover:text-primary" aria-label="Keranjang">
